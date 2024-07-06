@@ -7,7 +7,7 @@
 
 	type Filters = 'all' | 'active' | 'completed'
 
-	let todos = $state<Todo[]>()
+	let todos = $state<Todo[]>([])
 	let filter = $state<Filters>('all')
 
 	let filteredTodos = $derived(filterTodos())
@@ -60,12 +60,19 @@
 				return todos;
 		}
 	}
+
+	function remaining () {
+		return todos.filter(todo => !todo?.done)?.length
+	}
+
+	$effect(() =>{
+		console.log(todos)
+	})
 </script>
 
 
 <input onkeydown={addTodo} type="text" placeholder="Add todo" />
-{#each filteredTodos = $derived(filterTodos())
- as todo, i}
+{#each filteredTodos as todo, i}
 	<div>
 		<input oninput={editTodo} data-index = {i} type='text' value={todo.text}>
 		<input onchange={toggleTodo} data-index = {i} type='checkbox' value={todo.done} >
@@ -75,9 +82,11 @@
 
 
 <div>
-	{#each ['all', 'active', 'completed'] as filter, i}
-	<button onclick={() => setFilter(filter)}>
-	{filter}
+	{#each ['all', 'active', 'completed'] as filterItem, i}
+	<button onclick={() => setFilter(filterItem)}>
+	{filterItem}
 	</button>
 	{/each}
 </div>
+
+{remaining()}
