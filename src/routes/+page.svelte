@@ -66,7 +66,14 @@
 	}
 
 	$effect(() =>{
-		console.log(todos)
+		const savedTodos = localStorage.getItem('todos');
+		if (savedTodos) {
+			todos = JSON.parse(savedTodos);
+		}
+	})
+
+	$effect(() => {
+		localStorage.setItem('todos', JSON.stringify(todos))
 	})
 </script>
 
