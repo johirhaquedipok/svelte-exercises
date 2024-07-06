@@ -17,13 +17,20 @@
 		
 		todoEl.value = "";
 	}
+
+
+	function editTodo(event:Event) {
+		const inputEl = event.target as HTMLInputElement;
+		const index = inputEl.dataset.index;
+		todos[index].text = inputEl.value;
+	}
 </script>
 
 
 <input onkeydown={addTodo} type="text" placeholder="Add todo" />
 {#each todos as todo, i}
 	<div>
-		<input type='text' value={todo.text}>
+		<input oninput={editTodo} data-index = {i} type='text' value={todo.text}>
 		<input type='checkbox' value={todo.done} >
 	</div>
 
