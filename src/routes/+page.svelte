@@ -1,9 +1,16 @@
 <script lang="ts">
-	let todos = $state([
-		{text: 'Todo 1', done: false,},
-		{text: 'Todo 2', done : true},
-		{text: 'Todo 3', done: false}
-	])
+
+	type Todo = {
+		text: string;
+		done: boolean;
+	}
+
+	type Filters = 'all' | 'active' | 'completed'
+
+	let todos = $state<Todo[]>()
+	let filter = $state<Filters>('all')
+
+	let filteredTodos = $derived(filterTodos())
 
 	function addTodo(event:KeyboardEvent) {
 		if(event.key !== 'Enter') return ;
@@ -19,19 +26,58 @@
 	}
 
 
+
 	function editTodo(event:Event) {
 		const inputEl = event.target as HTMLInputElement;
 		const index = inputEl.dataset.index;
 		todos[index].text = inputEl.value;
 	}
+
+	function toggleTodo(event:Event) {
+		const inputEl = event.target as HTMLInputElement;
+		const index = inputEl.dataset.index;
+		todos[index].done = !todos[index].done;
+	}
+
+	function setFilter(newFilter:Filters) {
+		filter = newFilter
+	}
+
+
+	function filterTodos() {
+		switch (filter) {
+			case 'all':
+				
+				return todos;
+				case 'active':
+				
+				return todos?.filter(todo => !todo?.done)
+				case 'completed':
+				
+				return todos?.filter(todo => !todo?.done)
+		
+			default:
+				return todos;
+		}
+	}
 </script>
 
 
 <input onkeydown={addTodo} type="text" placeholder="Add todo" />
-{#each todos as todo, i}
+{#each filteredTodos = $derived(filterTodos())
+ as todo, i}
 	<div>
 		<input oninput={editTodo} data-index = {i} type='text' value={todo.text}>
-		<input type='checkbox' value={todo.done} >
+		<input onchange={toggleTodo} data-index = {i} type='checkbox' value={todo.done} >
 	</div>
 
 {/each}
+
+
+<div>
+	{#each ['all', 'active', 'completed'] as filter, i}
+	<button onclick={() => setFilter(filter)}>
+	{filter}
+	</button>
+	{/each}
+</div>
