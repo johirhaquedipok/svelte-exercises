@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import Navbar from "../components/navbar.svelte";
   import Sidebar from "../components/sidebar.svelte";
 
@@ -8,9 +9,15 @@
 		text: string,
 		status: boolean
 	}
-	let todos = $state<Todo[]>([]);
+	let todos = $state<Todo[]>([{
+		text:"hello",
+		id: 1,
+		status:true
+	}]);
 
 	let inputError = $state<string>("")
+	
+	let startFocus: HTMLInputElement ;
 
 	function addTodo (event:KeyboardEvent) {
 		if(event.key !== 'Enter') return;
@@ -28,6 +35,7 @@
 		todoEl.value = "";
 		inputError = "";
 	}
+onMount(() => startFocus.focus())
 </script>
 <div class=" m-auto max-h-screen h-screen bg-white shadow dark:bg-gray-800 dark:text-white">
 	<Navbar />
@@ -45,7 +53,7 @@
 						  
 					</span>
 			
-					<input onkeydown={addTodo} type="text" class="w-full py-3 pl-10 pr-4 text-gray-700 bg-white border rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" placeholder="Input your text">
+					<input onkeydown={addTodo} bind:this={startFocus} type="text" class="w-full py-3 pl-10 pr-4 text-gray-700 bg-white border rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" placeholder="Input your text">
 
 					
 				</div>
@@ -55,15 +63,23 @@
 				{/if}
 
 			{#each todos as {text,id, status}}
-				<div   class=" inset-x-0 px-6 py-3 mx-5 mt-4 overflow-y-auto bg-white border rounded-md max-h-72 dark:bg-gray-900 dark:border-gray-700">
-					<a href={id.toString()} class="block py-1" >
-						<h3 class="font-medium text-gray-700 dark:text-gray-100 hover:underline">{text}</h3>
-						<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Status: {status ? "done" : "pending"}</p>
-					</a>
+				<div   class="px-6 py-3  mt-4 overflow-y-auto bg-white border rounded-md max-h-72 dark:bg-gray-900 dark:border-gray-700">
+					<div class="flex py-1 gap-2 relative border border-gray-800 rounded-md" >
+						<input oninput={() => console.log(text)} data-id={id} value={text} type="text" class="flex-1 w-3/4 py-3  px-4 text-gray-700 bg-white rounded-md dark:bg-gray-900 dark:text-gray-300  focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" placeholder="Input your text">
+						<label for="hs-checkbox-on-right" class="flex w-1/13 absolute right-0 py-3 px-4  bg-white  rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-900  dark:text-neutral-400">
+							<span class="text-sm text-gray-500 dark:text-neutral-400 sr-only">Default </span>
+							<input type="checkbox" class="shrink-0 ms-auto mt-0.5 border-blue-800 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800 size-5" id="hs-checkbox-on-right">
+						  </label>
+					</div>
+					<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Status: {status ? "done" : "pending"}</p>
 				</div>
 				{/each}
 			</section>
+				
+			  
+				
 		</div>
+		
 
 	</div>
 	</div>
