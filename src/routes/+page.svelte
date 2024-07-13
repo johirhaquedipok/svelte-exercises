@@ -52,6 +52,16 @@
 		todos[+index].text = todoEl.value;
 		
 	}
+	function toggleTodoStatus (event:Event) {
+		
+		const todoEl = event.target as HTMLInputElement;
+		const index = todoEl.dataset.index;
+
+		if(!index) return		
+		 
+		todos[+index].status = !todos[+index].status;
+		
+	}
 
 onMount(() => startFocus.focus())
 </script>
@@ -86,7 +96,7 @@ onMount(() => startFocus.focus())
 						<input oninput={editTodo} data-index={i} value={text} type="text" class="flex-1 w-3/4 py-3  px-4 text-gray-700 bg-white rounded-md dark:bg-gray-900 dark:text-gray-300  focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" placeholder="Input your text">
 						<label for="hs-checkbox-on-right" class="flex w-1/13 absolute right-0 py-3 px-4  bg-white  rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-900  dark:text-neutral-400">
 							<span class="text-sm text-gray-500 dark:text-neutral-400 sr-only">Default </span>
-							<input type="checkbox" class="shrink-0 ms-auto mt-0.5 border-blue-800 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800 size-5" id="hs-checkbox-on-right">
+							<input onchange={toggleTodoStatus} data-index={i} type="checkbox" class="shrink-0 ms-auto mt-0.5 border-blue-800 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800 size-5" id="hs-checkbox-on-right" value={status}>
 						  </label>
 					</div>
 					<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Status: {status ? "done" : "pending"}</p>
