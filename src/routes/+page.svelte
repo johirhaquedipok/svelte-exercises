@@ -31,10 +31,28 @@
 		return;
 	}
 
-		todos = [...todos, {text, id:todos.length + 1, done: false}];
+		todos = [...todos, {text, id:todos.length + 1, status: false}];
 		todoEl.value = "";
 		inputError = "";
 	}
+
+	function editTodo (event:Event) {
+		
+		const todoEl = event.target as HTMLInputElement;
+		const index = todoEl.dataset.index;
+
+		if(!index) return
+		 
+		const selected = todos[+index];
+
+		if(!todoEl.value) {
+			todoEl.value = selected.text
+		}
+
+		todos[+index].text = todoEl.value;
+		
+	}
+
 onMount(() => startFocus.focus())
 </script>
 <div class=" m-auto max-h-screen h-screen bg-white shadow dark:bg-gray-800 dark:text-white">
@@ -62,10 +80,10 @@ onMount(() => startFocus.focus())
 				<p class="text-red-500">{inputError}</p>
 				{/if}
 
-			{#each todos as {text,id, status}}
+			{#each todos as {text,id, status}, i}
 				<div   class="px-6 py-3  mt-4 overflow-y-auto bg-white border rounded-md max-h-72 dark:bg-gray-900 dark:border-gray-700">
 					<div class="flex py-1 gap-2 relative border border-gray-800 rounded-md" >
-						<input oninput={() => console.log(text)} data-id={id} value={text} type="text" class="flex-1 w-3/4 py-3  px-4 text-gray-700 bg-white rounded-md dark:bg-gray-900 dark:text-gray-300  focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" placeholder="Input your text">
+						<input oninput={editTodo} data-index={i} value={text} type="text" class="flex-1 w-3/4 py-3  px-4 text-gray-700 bg-white rounded-md dark:bg-gray-900 dark:text-gray-300  focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40" placeholder="Input your text">
 						<label for="hs-checkbox-on-right" class="flex w-1/13 absolute right-0 py-3 px-4  bg-white  rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-900  dark:text-neutral-400">
 							<span class="text-sm text-gray-500 dark:text-neutral-400 sr-only">Default </span>
 							<input type="checkbox" class="shrink-0 ms-auto mt-0.5 border-blue-800 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800 size-5" id="hs-checkbox-on-right">
